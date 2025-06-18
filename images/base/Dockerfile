@@ -66,7 +66,9 @@ ARG NPM_GLOBAL=/usr/local/share/npm-global
 
 RUN \
     # Configure global npm install location, use group to adapt to UID/GID changes
-    if ! cat /etc/group | grep -e "^npm:" > /dev/null 2>&1; then groupadd -r npm; fi \
+    if cat /etc/passwd | grep -e "^ubuntu:" > /dev/null 2>&1; then userdel -f ubuntu; fi \
+    && if cat /etc/group | grep -e "^ubuntu:" > /dev/null 2>&1; then groupdel ubuntu; fi \
+    && if ! cat /etc/group | grep -e "^npm:" > /dev/null 2>&1; then groupadd -r npm; fi \
     && if ! cat /etc/passwd | grep -e "^${USERNAME}:" > /dev/null 2>&1; then useradd -m ${USERNAME}; fi \
     && chsh -s /bin/zsh ${USERNAME} \
     && usermod -a -G npm ${USERNAME} \
@@ -77,9 +79,9 @@ RUN \
     && chmod g+s ${NPM_GLOBAL} \
     && npm config -g set prefix ${NPM_GLOBAL} \
     && su ${USERNAME} -c "npm config -g set prefix ${NPM_GLOBAL}" \
-    # Install eslint
-    && su ${USERNAME} -c "umask 0002 && npm install -g eslint" \
     && npm cache clean --force > /dev/null 2>&1
 
 RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
+
+USER ${USERNAME}
