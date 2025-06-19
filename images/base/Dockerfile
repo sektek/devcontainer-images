@@ -17,13 +17,15 @@ COPY --from=node-stage /opt /opt
 
 COPY --from=python-stage /usr/local /usr/local
 
+ARG USERNAME=dev
+ARG NPM_GLOBAL=/usr/local/share/npm-global
+
 RUN mkdir -p -m 755 /etc/apt/keyrings \
     && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     && cat $out | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
 	  && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+	  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
     bash-completion \
     ca-certificates \
@@ -57,16 +59,11 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     ; \
     apt-get -y upgrade --no-install-recommends \
     ; \
+    apt-get purge -y imagemagick imagemagick-6-common \
     apt-get autoremove -y \
     ; \
-    rm -rf /var/lib/apt/lists/*
-
-ARG USERNAME=dev
-ARG NPM_GLOBAL=/usr/local/share/npm-global
-
-RUN \
-    # Configure global npm install location, use group to adapt to UID/GID changes
-    if cat /etc/passwd | grep -e "^ubuntu:" > /dev/null 2>&1; then userdel -f ubuntu; fi \
+    rm -rf /var/lib/apt/lists/* \
+    && if cat /etc/passwd | grep -e "^ubuntu:" > /dev/null 2>&1; then userdel -f ubuntu; fi \
     && if cat /etc/group | grep -e "^ubuntu:" > /dev/null 2>&1; then groupdel ubuntu; fi \
     && if ! cat /etc/group | grep -e "^npm:" > /dev/null 2>&1; then groupadd -r npm; fi \
     && if ! cat /etc/passwd | grep -e "^${USERNAME}:" > /dev/null 2>&1; then useradd -m ${USERNAME}; fi \
@@ -79,9 +76,8 @@ RUN \
     && chmod g+s ${NPM_GLOBAL} \
     && npm config -g set prefix ${NPM_GLOBAL} \
     && su ${USERNAME} -c "npm config -g set prefix ${NPM_GLOBAL}" \
-    && npm cache clean --force > /dev/null 2>&1
-
-RUN echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && npm cache clean --force > /dev/null 2>&1 \
+    && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
 USER ${USERNAME}
