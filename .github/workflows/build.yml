@@ -46,3 +46,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: "${{ vars.DOCKER_USER }}/devcontainer-java:latest"
           outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry' }}
+      - name: Build and push (Ruby)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./images/ruby
+          platforms: linux/amd64,linux/arm64
+          tags: "${{ vars.DOCKER_USER }}/devcontainer-ruby:latest"
+          outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry' }}
