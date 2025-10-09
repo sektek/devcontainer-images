@@ -1,4 +1,4 @@
-ARG JDK_VERSION=24
+ARG JDK_VERSION=25
 FROM eclipse-temurin:${JDK_VERSION} AS jdk-stage
 
 FROM sektek/devcontainer-base:latest
