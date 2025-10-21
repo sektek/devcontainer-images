@@ -80,8 +80,8 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-ARG GK_VERSION=3.1.40
-ARG BAT_VERSION=0.25.0
+ARG GK_VERSION=3.1.44
+ARG BAT_VERSION=0.26.0
 ARG TARGETARCH
 
 RUN wget https://github.com/gitkraken/gk-cli/releases/download/v${GK_VERSION}/gk_${GK_VERSION}_linux_${TARGETARCH}.deb \
