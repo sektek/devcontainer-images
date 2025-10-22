@@ -6,6 +6,7 @@ FROM node:${NODE_VERSION} AS node-stage
 FROM python:${PYTHON_VERSION} AS python-stage
 FROM grafana/logcli:latest AS logcli
 FROM grafana/tempo-cli:latest AS tempo-cli
+FROM amazon/aws-cli AS aws-cli
 
 FROM buildpack-deps:${VARIANT}
 
@@ -14,6 +15,8 @@ COPY --from=tempo-cli /tempo-cli /usr/bin/tempo-cli
 
 COPY --from=node-stage /usr/local /usr/local
 COPY --from=node-stage /opt /opt
+
+COPY --from=aws-cli /usr/local /usr/local
 
 COPY --from=python-stage /usr/local /usr/local
 
@@ -75,7 +78,13 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     ; \
     apt-get -y upgrade --no-install-recommends \
     ; \
-    apt-get purge -y imagemagick imagemagick-6-common \
+    apt-get purge -y imagemagick \
+    imagemagick-6-common \
+    libmagickcore-7.q16-dev  \
+    libmagickcore-dev \
+    libmagickwand-7.q16-dev \
+    libmagickwand-dev \
+    ; \
     apt-get autoremove -y \
     ; \
     rm -rf /var/lib/apt/lists/*
