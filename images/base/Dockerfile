@@ -89,7 +89,7 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-ARG GK_VERSION=3.1.48
+ARG GK_VERSION=3.1.51
 ARG BAT_VERSION=0.26.0
 ARG TARGETARCH
 
