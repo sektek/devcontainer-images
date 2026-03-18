@@ -98,7 +98,9 @@ RUN wget https://github.com/gitkraken/gk-cli/releases/download/v${GK_VERSION}/gk
     && rm gk_${GK_VERSION}_linux_${TARGETARCH}.deb \
     && wget https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat_${BAT_VERSION}_${TARGETARCH}.deb \
     && dpkg -i bat_${BAT_VERSION}_${TARGETARCH}.deb \
-    && rm bat_${BAT_VERSION}_${TARGETARCH}.deb
+    && rm bat_${BAT_VERSION}_${TARGETARCH}.deb \
+    && npm install -g @anthropic-ai/claude-code \
+    && npm install -g @github/copilot
 
 ARG USERNAME=dev
 ARG NPM_GLOBAL=/usr/local/share/npm-global
