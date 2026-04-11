@@ -57,6 +57,7 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     postgresql-client \
     psmisc \
     redis-tools \
+    ripgrep \
     strace \
     sudo \
     telnet \
@@ -89,17 +90,12 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-ARG GK_VERSION=3.1.54
 ARG BAT_VERSION=0.26.1
 ARG FNM_VERSION=1.39.0
 ARG FNM_ARCH
 ARG TARGETARCH
 
 RUN FNM_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "linux") && echo "Target architecture: $TARGETARCH, FNM architecture: $FNM_ARCH" \
-    && echo "Installing GitKraken CLI v${GK_VERSION}, Bat v${BAT_VERSION}, and fnm v${FNM_VERSION} for architecture ${TARGETARCH}" \
-    && wget https://github.com/gitkraken/gk-cli/releases/download/v${GK_VERSION}/gk_${GK_VERSION}_linux_${TARGETARCH}.deb \
-    && dpkg -i gk_${GK_VERSION}_linux_${TARGETARCH}.deb \
-    && rm gk_${GK_VERSION}_linux_${TARGETARCH}.deb \
     && wget https://github.com/sharkdp/bat/releases/download/v${BAT_VERSION}/bat_${BAT_VERSION}_${TARGETARCH}.deb \
     && dpkg -i bat_${BAT_VERSION}_${TARGETARCH}.deb \
     && rm bat_${BAT_VERSION}_${TARGETARCH}.deb \
