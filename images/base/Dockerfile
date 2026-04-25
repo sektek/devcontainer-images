@@ -7,6 +7,7 @@ FROM python:${PYTHON_VERSION} AS python-stage
 FROM grafana/logcli:latest AS logcli
 FROM grafana/tempo-cli:latest AS tempo-cli
 FROM amazon/aws-cli AS aws-cli
+FROM hashicorp/vault:latest AS vault-cli
 
 FROM buildpack-deps:${VARIANT}
 
@@ -17,6 +18,7 @@ COPY --from=node-stage /usr/local /usr/local
 COPY --from=node-stage /opt /opt
 
 COPY --from=aws-cli /usr/local /usr/local
+COPY --from=vault-cli /bin/vault /usr/bin/vault
 
 COPY --from=python-stage /usr/local /usr/local
 
