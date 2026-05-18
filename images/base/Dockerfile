@@ -107,7 +107,9 @@ RUN FNM_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "linux") && e
     && unzip fnm-${FNM_ARCH}.zip -d /usr/local/bin/ \
     && rm fnm-${FNM_ARCH}.zip \
     && npm install -g @anthropic-ai/claude-code \
-    && npm install -g @github/copilot
+    && npm install -g @github/copilot \
+    && npm install -g @openai/codex \
+    && curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --install-dir /usr/local/bin
 
 ARG USERNAME=dev
 ARG NPM_GLOBAL=/usr/local/share/npm-global
