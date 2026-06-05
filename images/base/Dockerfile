@@ -5,6 +5,7 @@ ARG PYTHON_VERSION=3
 FROM node:${NODE_VERSION} AS node-stage
 FROM python:${PYTHON_VERSION} AS python-stage
 FROM grafana/logcli:latest AS logcli
+FROM grafana/mimirtool:latest AS mimirtool
 FROM grafana/tempo-cli:latest AS tempo-cli
 FROM amazon/aws-cli AS aws-cli
 FROM hashicorp/vault:latest AS vault-cli
@@ -13,6 +14,7 @@ FROM duckdb/duckdb:latest AS duckdb-cli
 FROM buildpack-deps:${VARIANT}
 
 COPY --from=logcli /usr/bin/logcli /usr/bin/logcli
+COPY --from=mimirtool /bin/mimirtool /usr/bin/mimirtool
 COPY --from=tempo-cli /tempo-cli /usr/bin/tempo-cli
 
 COPY --from=node-stage /usr/local /usr/local
@@ -92,10 +94,13 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     ; \
     apt-get autoremove -y \
     ; \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* \
+    ; \
+    setcap -r /usr/local/bin/vault || true
 
 ARG BAT_VERSION=0.26.1
 ARG FNM_VERSION=1.39.0
+ARG GCX_VERSION=0.3.0
 ARG FNM_ARCH
 ARG TARGETARCH
 
@@ -106,6 +111,9 @@ RUN FNM_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "linux") && e
     && wget https://github.com/Schniz/fnm/releases/download/v${FNM_VERSION}/fnm-${FNM_ARCH}.zip \
     && unzip fnm-${FNM_ARCH}.zip -d /usr/local/bin/ \
     && rm fnm-${FNM_ARCH}.zip \
+    && wget https://github.com/grafana/gcx/releases/download/v${GCX_VERSION}/gcx_${GCX_VERSION}_linux_${TARGETARCH}.tar.gz \
+    && tar -xzf gcx_${GCX_VERSION}_linux_${TARGETARCH}.tar.gz -C /usr/local/bin/ gcx \
+    && rm gcx_${GCX_VERSION}_linux_${TARGETARCH}.tar.gz \
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @github/copilot \
     && npm install -g @openai/codex \
