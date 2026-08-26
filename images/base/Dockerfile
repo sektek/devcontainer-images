@@ -117,6 +117,7 @@ RUN FNM_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "linux") && e
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @github/copilot \
     && npm install -g @openai/codex \
+    && npm install -g @sektek/gen \
     && curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --install-dir /usr/local/bin
 
 ARG USERNAME=dev
