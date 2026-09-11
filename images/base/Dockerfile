@@ -133,6 +133,7 @@ RUN if cat /etc/passwd | grep -e "^ubuntu:" > /dev/null 2>&1; then userdel -f ub
     && touch /usr/local/etc/npmrc \
     && chown ${USERNAME}:npm ${NPM_GLOBAL} /usr/local/etc/npmrc \
     && chmod g+s ${NPM_GLOBAL} \
+    && npm install -g npm@latest \
     && npm config -g set prefix ${NPM_GLOBAL} \
     && su ${USERNAME} -c "npm config -g set prefix ${NPM_GLOBAL}" \
     && npm install -g @sektek/gen \
