@@ -117,7 +117,6 @@ RUN FNM_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "linux") && e
     && npm install -g @anthropic-ai/claude-code \
     && npm install -g @github/copilot \
     && npm install -g @openai/codex \
-    && npm install -g @sektek/gen \
     && curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --install-dir /usr/local/bin
 
 ARG USERNAME=dev
@@ -136,6 +135,7 @@ RUN if cat /etc/passwd | grep -e "^ubuntu:" > /dev/null 2>&1; then userdel -f ub
     && chmod g+s ${NPM_GLOBAL} \
     && npm config -g set prefix ${NPM_GLOBAL} \
     && su ${USERNAME} -c "npm config -g set prefix ${NPM_GLOBAL}" \
+    && npm install -g @sektek/gen \
     && npm cache clean --force > /dev/null 2>&1 \
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
