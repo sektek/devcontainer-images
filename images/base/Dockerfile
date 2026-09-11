@@ -37,10 +37,12 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     && sed -i '/path-exclude=\/usr\/share\/man/s/^/#/' /etc/dpkg/dpkg.cfg.d/excludes \
     && apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y install --no-install-recommends \
+    apt-transport-https \
     bash-completion \
     ca-certificates \
     cmake \
     dialog \
+    dirmngr \
     eza \
     gawk \
     gnupg2 \
@@ -64,6 +66,7 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     psmisc \
     redis-tools \
     ripgrep \
+    socat \
     strace \
     sudo \
     telnet \
@@ -91,6 +94,16 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     libmagickcore-dev \
     libmagickwand-7.q16-dev \
     libmagickwand-dev \
+    ; \
+    out=$(mktemp) && wget -nv -O$out https://download.docker.com/linux/ubuntu/gpg \
+    && cat $out | tee /etc/apt/keyrings/docker-archive-keyring.asc > /dev/null \
+    && chmod go+r /etc/apt/keyrings/docker-archive-keyring.asc \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.asc] https://download.docker.com/linux/ubuntu stable main" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends \
+    docker-buildx-plugin \
+    docker-ce-cli \
+    docker-compose-plugin \
     ; \
     apt-get autoremove -y \
     ; \
