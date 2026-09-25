@@ -10,6 +10,7 @@ FROM grafana/tempo-cli:latest AS tempo-cli
 FROM amazon/aws-cli AS aws-cli
 FROM hashicorp/vault:latest AS vault-cli
 FROM duckdb/duckdb:latest AS duckdb-cli
+FROM ngrok/ngrok:latest AS ngrok
 
 FROM buildpack-deps:${VARIANT}
 
@@ -23,6 +24,7 @@ COPY --from=node-stage /opt /opt
 COPY --from=aws-cli /usr/local /usr/local
 COPY --from=vault-cli /bin/vault /usr/local/bin/vault
 COPY --from=duckdb-cli /duckdb /usr/local/bin/duckdb
+COPY --from=ngrok /bin/ngrok /usr/local/bin/ngrok
 
 COPY --from=python-stage /usr/local /usr/local
 
