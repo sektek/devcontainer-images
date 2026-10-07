@@ -28,6 +28,7 @@ COPY --from=ngrok /bin/ngrok /usr/local/bin/ngrok
 
 COPY --from=python-stage /usr/local /usr/local
 
+ARG VARIANT
 ARG USERNAME=dev
 ARG NPM_GLOBAL=/usr/local/share/npm-global
 
@@ -45,11 +46,13 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     cmake \
     dialog \
     dirmngr \
+    erofs-utils \
     eza \
     gawk \
     gnupg2 \
     gh \
     htop \
+    iptables \
     iproute2 \
     iputils-ping \
     jq \
@@ -64,6 +67,7 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     manpages-posix \
     manpages-posix-dev \
     net-tools \
+    pigz \
     postgresql-client \
     psmisc \
     redis-tools \
@@ -100,10 +104,11 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     out=$(mktemp) && wget -nv -O$out https://download.docker.com/linux/ubuntu/gpg \
     && cat $out | tee /etc/apt/keyrings/docker-archive-keyring.asc > /dev/null \
     && chmod go+r /etc/apt/keyrings/docker-archive-keyring.asc \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.asc] https://download.docker.com/linux/ubuntu stable main" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker-archive-keyring.asc] https://download.docker.com/linux/ubuntu ${VARIANT} stable main" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt-get update \
     && apt-get -y install --no-install-recommends \
     docker-buildx-plugin \
+    docker-ce \
     docker-ce-cli \
     docker-compose-plugin \
     ; \
