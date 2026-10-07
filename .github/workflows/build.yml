@@ -53,3 +53,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: "${{ vars.DOCKER_USER }}/devcontainer-ruby:latest"
           outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry' }}
+      - name: Build and push (Rust)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./images/rust
+          platforms: linux/amd64,linux/arm64
+          tags: "${{ vars.DOCKER_USER }}/devcontainer-rust:latest"
+          outputs: ${{ github.event_name == 'pull_request' && 'type=cacheonly' || 'type=registry' }}
