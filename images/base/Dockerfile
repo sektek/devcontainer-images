@@ -80,6 +80,7 @@ RUN mkdir -p -m 755 /etc/apt/keyrings \
     tmux \
     unminimize \
     uuid-dev \
+    uuid-runtime \
     vim-tiny \
     zsh \
     ; \
